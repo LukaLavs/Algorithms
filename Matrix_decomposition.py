@@ -14,8 +14,6 @@ def LU(A):
           for j in range(n)] for i in range(n)]
     return L, U
 
-
-
 def Cholesky(A):
     """ Cholesky razcep"""
     n = len(A)
@@ -25,8 +23,6 @@ def Cholesky(A):
         for j in range(i+1, n):
             V[j][i] = (A[j][i] - sum([V[j][k]*V[i][k] for k in range(i)])) / V[i][i]
     return V
-
-
 
 def QR(A):
     """ QR razcep, Gram-Schmidt"""
@@ -42,8 +38,6 @@ def QR(A):
         for k in range(m):
             Q[k][i] = q[k] / R[i][i]
     return Q, R
-
-
 
 def Mdot(A, B):
     return [[sum(A[i][k] * B[k][j] for k in range(len(B))) for j in range(len(B[0]))] for i in range(len(A))]
@@ -74,15 +68,13 @@ def Givens(A, b=None):
     if b: return Q, R, b
     return Q, R
 
-
-
 def Mdot(A, B):
     return [[sum(A[i][k] * B[k][j] for k in range(len(B))) for j in range(len(B[0]))] for i in range(len(A))]
 
 def Householder(A, b=None):
     """ QR razcep, Householderjeva zrcaljenja """
     if b:
-        b = [[bi] for bi in b]
+        QTb = [[bi] for bi in b]
     m, n = len(A), len(A[0])
     Q = [[1 if i == j else 0 for j in range(m)] for i in range(m)]
     R = [row[:] for row in A]
@@ -103,11 +95,11 @@ def Householder(A, b=None):
         R = Mdot(P_full, R)
         Q = Mdot(Q, P_full)
         if b:
-            b = Mdot(P_full, b)
-    if b: return Q, R, b
+            QTb = Mdot(P_full, QTb)
+    if b: 
+        QTb = [QTb[i][0] for i in range(len(QTb))]
+        return Q, R, QTb
     return Q, R
-
-
 
 def Ly(L, b):
     y = [0 for i in range(len(b))]
@@ -121,7 +113,13 @@ def Ux(U, y):
     for i in range(len(y)-1, -1, -1):
         x[i] = (y[i] - sum(U[i][k]*x[k] for k in range(i+1, n))) / U[i][i]
     return x
-
+    
+def Householder_solve(A, b):
+    """ Rešitev sistema Ax = b z QR razcepom """
+    Q, R, QTb = Householder(A, b)
+    x = Ux(R, QTb)
+    return x
+    
 def LU_solve(A, b):
     L, U = LU(A)
     y = Ly(L, b)
