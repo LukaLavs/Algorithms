@@ -120,7 +120,7 @@ def plot(f, p, a, b, accuracy=100):
     plt.grid(True)
     plt.show()
 
-def p_n_e_a(E, f, q, w, draw=True, tolerance=1e-10, max_iterations=100):
+def PNEA(E, f, q, w, draw=True, tolerance=1e-10, max_iterations=100):
     """ Polinom najboljše enakomerne aproksimacije.
     Iščemo optimalen p*(x) = a0 + a1*x + ... + an*x^n 
     na intervalu [q, w] """
@@ -192,4 +192,5 @@ def f(x):
 
 # Polinom stopnje n, na [0, 1]:  
 n = 5   
-p_n_e_a(Linspace(0, 1, n + 2), f, 0, 1, draw=True)
+PNEA(Linspace(0, 1, n + 2), f, 0, 1, draw=True)
+
