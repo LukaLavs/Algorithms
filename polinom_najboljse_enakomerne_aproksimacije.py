@@ -146,7 +146,7 @@ def p_n_e_a(E, f, q, w, draw=True, tolerance=1e-10, max_iterations=100):
         u = grid_search_max(r, q, w)
         
         # Preverimo ali smemo zaključiti
-        if abs(abs(f(u)) - abs(m)) < tolerance:
+        if abs(abs(r(u)) - abs(m)) < tolerance:
             print(f"koef = {koef}")
             print(f"E{_ -1} = {E}")
             if draw:
