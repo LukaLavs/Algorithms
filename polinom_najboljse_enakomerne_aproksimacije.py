@@ -86,6 +86,7 @@ def F(E, f):
 
 def grid_search_max(f, a, b, density=1000, stopping=1e3):
     """ funkcija poišče maximum za f na [a, b] """
+    A, B = a, b # označi meje intervala
     accuracy = 1e-16
     M = float("-inf")
     x = a
@@ -102,7 +103,7 @@ def grid_search_max(f, a, b, density=1000, stopping=1e3):
                 M = v
                 x = t
         l = (b-a)/density
-        a, b = x - l, x + l
+        a, b = max(A, x - l), min(B, x + l)
     print(f"u = max(abs(r(x))) = {M}, x* = {x}\n")
     return x
 
@@ -160,8 +161,6 @@ def p_n_e_a(E, f, q, w, draw=True, tolerance=1e-10, max_iterations=100):
         # zamenjajmo u in tisti E_j, ki da enak predznak skozi r
         e = E[0]
         index_e = 0
-        if u < e or u > E[-1]: print("Napaka, u < E[0] ali u > E[-1]"); break
-        # Če u < e or u > E[-1], nisem prepričan kaj storiti, algoritem zaključim
         for i in range(1, len(E)):
             if u < E[i]:
                 e_ = E[i]
