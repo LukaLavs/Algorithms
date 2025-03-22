@@ -1,2 +1,2 @@
 ## Algoritmi
-Algoritmi iz optimizacijskih in numeričnih metod.
+Algoritmi iz optimizacijskih, operacijskih in numeričnih metod.
