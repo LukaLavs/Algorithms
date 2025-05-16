@@ -122,7 +122,7 @@ def hungarian_method(M, show_steps=False):
 
 def matrix_sum(Matrix, way="min", show_steps=False):
     if way == "min":
-         M = [[-Matrix[i][j] for j in range(len(Matrix[0]))] for i in range(len(Matrix))]
+         M = [[Matrix[i][j] for j in range(len(Matrix[0]))] for i in range(len(Matrix))]
     if way == "max":
         M = [[-Matrix[i][j] for j in range(len(Matrix[0]))] for i in range(len(Matrix))]
     if way == "max_product":
