@@ -40,12 +40,14 @@ def QR(A):
     return Q, R
 
 def Mdot(A, B):
+    if isinstance(B[0], float) or isinstance(B[0], int):
+        B = [[b] for b in B]
+        x = [[sum(A[i][k] * B[k][j] for k in range(len(B))) for j in range(len(B[0]))] for i in range(len(A))]
+        return [x[i][0] for i in range(len(x))]
     return [[sum(A[i][k] * B[k][j] for k in range(len(B))) for j in range(len(B[0]))] for i in range(len(A))]
 
 def Givens(A, b=None):
     """ Givensove rotacije """
-    if b:
-        b = [[bi] for bi in b]
     m, n = len(A), len(A[0])
     R = [row[:] for row in A]
     Q = [[1 if i == j else 0 for j in range(m)] for i in range(m)]
@@ -67,9 +69,6 @@ def Givens(A, b=None):
     Q = [list(row) for row in zip(*Q)]
     if b: return Q, R, b
     return Q, R
-
-def Mdot(A, B):
-    return [[sum(A[i][k] * B[k][j] for k in range(len(B))) for j in range(len(B[0]))] for i in range(len(A))]
 
 def Householder(A, b=None):
     """ QR razcep, Householderjeva zrcaljenja """
@@ -101,6 +100,9 @@ def Householder(A, b=None):
         return Q, R, QTb
     return Q, R
 
+def transpose(M):
+    return [list(row) for row in zip(*M)]
+
 def Ly(L, b):
     y = [0 for i in range(len(b))]
     for i in range(len(b)):
@@ -125,3 +127,27 @@ def LU_solve(A, b):
     y = Ly(L, b)
     x = Ux(U, y)
     return x
+
+def Givens_solve(A, b):
+    Q, R, QTb = Givens(A, b)
+    x = Ux(R, QTb)
+    return x
+
+def QR_solve(A, b):
+    Q, R = QR(A)
+    # Izračun Q^T b - uporabi tvojo funkcijo Mdot, če nimaš NumPya
+    QTb = Mdot(transpose(Q), b)  # predpostavljam, da imaš funkcijo transpose
+    x = Ux(R, QTb)
+    return x
+
+def Cholesky_solve(A, b):
+    L = Cholesky(A)
+    y = Ly(L, b)
+    # Zgornja trikotna matrika je L^T, uporabimo Ux z L transponirano
+    LT = transpose(L)
+    x = Ux(LT, y)
+    return x
+
+
+
+

@@ -1,12 +1,3 @@
-
-M = [[9,5,9,11,9,3],
-[4,6,3,9,4,8],
-[12,8,9,9,11,4],
-[9,12,9,8,6,3],
-[11,7,12,9,8,7],
-[5,7,10,2,4,3]]
-
-
 def find_increasing_path(S, T, M, connections):
     # Poišči prosto vozlišče v T:
     for v in T:
@@ -150,6 +141,3 @@ def matrix_sum(Matrix, way="min", show_steps=False):
         for (i, j) in permutation:
             result *= Matrix[i][j]
         return f"{way}: {result}"
-
-
-print(matrix_sum(M, "min", show_steps=True))

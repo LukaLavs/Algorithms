@@ -183,14 +183,5 @@ def PNEA(E, f, q, w, draw=True, tolerance=1e-10, max_iterations=100):
             return sum(koef[i]*x**i for i in range(len(koef)))
         plot(f, p, q, w)
     return koef, E
-        
-##################################################
-##################################################  
 
-def f(x):
-    return math.sin(5*x)/4 + math.sin(x)
-
-# Polinom stopnje n, na [0, 1]:  
-n = 5   
-PNEA(Linspace(0, 1, n + 2), f, 0, 1, draw=True)
 

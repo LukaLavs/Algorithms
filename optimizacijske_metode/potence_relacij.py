@@ -11,7 +11,3 @@ def Relation(R, n):
         # zdaj je K = R^(i+2); po definiciji kompozituma K <- K ° R
     return K
    
-# nastavi n in R in zaženi kodo    
-R = {(1,2),(2,3),(2,5),(3,1),(3,4),(4,2),(5,1),(5,4)}  
-n = 2
-#print(f"R^{n} = {Relation(R, n)}\n")

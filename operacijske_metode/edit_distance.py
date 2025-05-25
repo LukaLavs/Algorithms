@@ -84,5 +84,3 @@ def editDistance(str1, str2, showSolution=False):
     for op in operations:
         print(op)
 
-    
-editDistance("ponedeljek", "petek", showSolution=True)
