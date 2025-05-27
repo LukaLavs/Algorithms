@@ -1,9 +1,15 @@
 import math
 
 class NDualNumber:
-    def __init__(self, coeffs):
-        self.coeffs = list(coeffs)
-        self.n = len(coeffs) - 1
+    def __init__(self, coeffs, n=None):
+        if n:
+            # Then coeffs is a, point for derivate, construct Ndual[a, 1, 0, ..., 0]
+            a = coeffs
+            self.coeffs = list([a, 1] + [0] * n)
+            self.n = n
+        else:
+            self.coeffs = list(coeffs)
+            self.n = len(coeffs) - 1
 
     def __add__(self, other):
         if isinstance(other, NDualNumber):
@@ -47,7 +53,6 @@ class NDualNumber:
     def __pow__(self, other):
         return pow(self, other)
     
-
     def __truediv__(self, other):
         if isinstance(other, NDualNumber):
             # Division via Newton method or recursive formula
@@ -95,12 +100,20 @@ def evaluate_f(derivs, X):
     B_power = NDualNumber([1.0] + [0.0] * n)  # B^0 = 1
 
     for k in range(n + 1):
+        if derivs[k] == None:
+            break
         term_coeff = derivs[k](a) / math.factorial(k)
         term = B_power * term_coeff
         result = result + term
         B_power = B_power * B  # B^k → B^{k+1}
 
     return result
+
+def expirimental_pow(X, y):
+    n = X.n
+    derivs = [( lambda x, i=i: x**(y - i) * (math.gamma(y + 1) / math.gamma(y - i + 1)) ) if (y - i) >= 0 else None
+              for i in range(0, n + 1)]
+    return evaluate_f(derivs, X)
 
 # --- Trigonometry ---
 
@@ -137,8 +150,8 @@ def cot(X):
 
 # --- Preparation for trigonometric inverses ---
 
-def pochhammer(a, k):
-    return math.gamma(a + k) / math.gamma(a)
+def pochhammer(x, k):
+    return math.gamma(x + k) / math.gamma(x)
 
 def hypergeometric_pfq_regularized(a_params, b_params, X, n_derivate):
     """
@@ -221,23 +234,48 @@ def exp(X):
 
 def expm1(X):
     return exp(X) - 1
-
-def pow(X, Y):
-    # Ensure Y is a dual number
-    if not isinstance(Y, NDualNumber):
-        Y = NDualNumber([Y] + [0.0] * X.n)
-    if X.coeffs[0] == 0:
-        if Y.coeffs[0] == 0:
-            # 0^0 = 1 conventionally
-            return NDualNumber([1.0] + [0.0] * X.n)
-        else:
-            # log(0) is undefined
-            return NDualNumber([float('nan')] * (X.n + 1))
-    return exp(Y * log(X))
-
+    
 def sqrt(X):
     return pow(X, 0.5)
 
+def comb(K, n):
+    p = K
+    for i in range(1, n):
+        p *= (K - i)
+    return p / math.factorial(n)
+
+def factorial(X):
+    a = X.coeffs[0]
+    if isinstance(a, int):
+        p = X
+        for i in range(1, a):
+            p *= (X - i)
+        return p
+    print("factorial not possible, perhaps you meant factorialpower")
+    return None
+
+def factorialpower(X, n):
+    """returns X*(X - 1)*...*(X - n + 1)"""
+    p = X
+    for i in range(1, n):
+        p *= (X - i)
+    return p 
+
+def pow(X, Y):
+    """ Will give wrong results if derivates at 0 don't exist """
+    a = X.coeffs[0]
+    if a != 0:
+        return exp(Y * log(X))
+    if isinstance(Y, int):
+        p = X
+        for i in range(1, Y):
+            p *= X
+        return p
+    if isinstance(Y, float):
+        print("expirimental pow used, will not notify if result non existant")
+        return expirimental_pow(X, Y)
+    print("pow can't handle it yet")
+    return None
 # --- Logarithms ---
 
 def log(X, base="e"):
